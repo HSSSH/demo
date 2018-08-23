@@ -1,0 +1,242 @@
+<template>
+  <div id="display">
+      <div v-for="(item,index) of componentList" :key="index" :style="item.style">
+        <div v-for="(element,index) of item.allElements" :key="index" :style="element.style">
+           <my-element :type="element.type" :config="element.config"></my-element>
+        </div>
+      </div>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'display',
+  data() {
+    return {
+      componentList:[{
+          style:{
+              'position':'absolute',
+              'top':'0px',
+              'left':'50%',
+              'margin-left':'-500px',
+              'margin-top':'0px',
+              'width':'1000px',
+              'height':'470px'
+          },
+          allElements:[
+              {
+                  'type':'picture',
+                  'config':{
+                      'src':'../assets/test/bg.png',
+                      'eleStyle':{
+
+                      }
+                  },
+                  'style':{
+                      'position':'absolute',
+                      'top':'0px',
+                      'left':'0px',
+                      'margin-left':'0px',
+                      'margin-top':'0px',
+                      'width':'100%',
+                      'height':'100%',
+                      'z-index':'1'
+                  }
+              },
+              {
+                  'type':'picture',
+                  'config':{
+                      'src':'../assets/test/Layer4.png',
+                      'eleStyle':{
+
+                      }
+                  },
+                  'style':{
+                      'position':'absolute',
+                      'top':'20px',
+                      'left':'20px',
+                      'margin-left':'0px',
+                      'margin-top':'0px',
+                      'width':'80px',
+                      'height':'80px',
+                      'z-index':'2'
+                  }
+              },
+              {
+                  'type':'label',
+                  'config':{
+                      'text':'嘉兴市环境保护局',
+                      'eleStyle':{
+                          'font-size':'32px',
+                          'color':'#305aa4',
+                          'font-weight': '900',
+                          'font-family': "宋体"
+                      }
+                  },
+                  'style':{
+                      'position':'absolute',
+                      'top':'30px',
+                      'left':'110px',
+                      'margin-left':'0px',
+                      'margin-top':'0px',
+                      'z-index':'2'
+                  }
+              }
+          ]
+      },{
+          style:{
+              'position':'absolute',
+              'top':'470px',
+              'left':'50%',
+              'margin-left':'-500px',
+              'margin-top':'0px',
+              'width':'1000px'
+          },
+          allElements:[
+              {
+                  'type':'navigate',
+                  'config':{
+                      'data':[{
+                          'text':'首页'
+                      },{
+                          'text':'信息公开'
+                      },{
+                          'text':'法律法规'
+                      },{
+                          'text':'环境标准'
+                      },{
+                          'text':'污染防治'
+                      },{
+                          'text':'审批公告'
+                      },{
+                          'text':'党风廉政'
+                      }],
+                      'flag':0,
+                      'chooseStyle':{
+                          'color':'#ffffff',
+                          'font-size': '15px',
+                          'background-color': '#2d588f',
+                          'line-height':'35px'
+                      },
+                      'eleStyle':{
+                          'color':'#ffffff',
+                          'font-size': '15px',
+                          'background-color': '#407dcd',
+                          'line-height':'35px'
+                      },
+                      'children':{
+                          0:[{
+                              style:{
+                                  'position':'absolute',
+                                  'top':'10px',
+                                  'left':'0px',
+                                  'margin-left':'0px',
+                                  'margin-top':'0px',
+                                  'width':'540px',
+                                  'height':'280px'
+                              },
+                              allElements:[{
+                                  'type':'slidePic',
+                                  'config':{
+                                      'imgData':[{
+                                          'eleStyle':{
+                                              'background-image':'url("assets/test/222.jpg")'
+                                          }
+                                      },{
+                                          'eleStyle':{
+                                              'background-image':'url("assets/test/865783550181804300.jpg")'
+                                          }
+                                      },{
+                                          'eleStyle':{
+                                              'background-image':'url("assets/test/333.jpg")'
+                                          }
+                                      },{
+                                          'eleStyle':{
+                                              'background-image':'url("assets/test/444.jpg")'
+                                          }
+                                      }],
+                                      'currentIndex':0,
+                                      'eleStyle':{
+                                      }
+                                  },
+                                  'style':{
+                                      'position':'absolute',
+                                      'top':'0px',
+                                      'left':'0px',
+                                      'margin-left':'0px',
+                                      'margin-top':'0px',
+                                      'width':'100%',
+                                      'height':'100%'
+                                  }
+                              }]
+                          },{
+                              style:{
+                                  'position':'absolute',
+                                  'top':'10px',
+                                  'left':'550px',
+                                  'margin-left':'0px',
+                                  'margin-top':'0px',
+                                  'width':'450px',
+                                  'height':'280px'
+                              },
+                              allElements:[{
+                                  'type':'article',
+                                  'config':{
+                                      'title':'政策文件',
+                                      'moreInfo':'更多',
+                                      'content':[
+                                          {
+                                              'text':'嘉环辐（2018）9号关于同意向巨石集团有限公司重新核发辐射安全许可证的函'
+                                          },
+                                          {
+                                              'text':'嘉环发（2018）18号关于做好2018年4月嘉兴市普通高中学业水平考试和普通高校招生选考科目考试期间环境噪声整治的通知'
+                                          },
+                                          {
+                                              'text':'嘉环党组（2018）6号关于调整市环境保护局领导分工的通知'
+                                          },
+                                          {
+                                              'text':'嘉环辐（2018）9号关于同意向巨石集团有限公司重新核发辐射安全许可证的函'
+                                          },
+                                          {
+                                              'text':'嘉环发（2018）18号关于做好2018年4月嘉兴市普通高中学业水平考试和普通高校招生选考科目考试期间环境噪声整治的通知'
+                                          },
+                                          {
+                                              'text':'嘉环党组（2018）6号关于调整市环境保护局领导分工的通知'
+                                          }
+                                      ],
+                                      'eleStyle':{
+                                      }
+                                  },
+                                  'style':{
+                                      'position':'absolute',
+                                      'top':'0px',
+                                      'left':'0px',
+                                      'margin-left':'0px',
+                                      'margin-top':'0px',
+                                      'width':'100%',
+                                      'height':'100%'
+                                  }
+                              }]
+                          }]
+                      }
+                  },
+                  'style':{
+                      'position':'absolute',
+                      'top':'0px',
+                      'left':'0px',
+                      'margin-left':'0px',
+                      'margin-top':'0px',
+                      'width':'100%',
+                      'height':'100%'
+                  }
+              }
+          ]
+      }]
+    }
+  }
+}
+</script>
+
+<style src="@/sass/element.scss" scoped lang="scss"></style>
+<style scoped lang="scss">
+</style>
