@@ -1,25 +1,5 @@
-<template>
-  <div id="app">
-    <div class="header">
-      <ul>
-        <li><router-link to="/display">浏览</router-link></li>
-        <li><router-link to="/design">制作</router-link></li>
-      </ul>
-    </div>
-    <router-view class="content-view"></router-view>
-  </div>
-</template>
-
-<script>
-import router from "@/router/index.js";
-export default {
-  name: 'app',
-  router,
-  components: {}
-}
-</script>
-
 <style src="../node_modules/bootstrap/dist/css/bootstrap.min.css"></style>
+<style src="@/sass/global.scss" lang="scss"></style>
 <style scoped lang="scss">
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
@@ -44,3 +24,24 @@ export default {
   }
 }
 </style>
+
+<template>
+  <div id="app">
+    <div class="header">
+      <ul>
+        <li><router-link to="/display">浏览</router-link></li>
+        <li><router-link to="/design">制作</router-link></li>
+      </ul>
+    </div>
+    <router-view class="content-view"></router-view>
+  </div>
+</template>
+
+<script>
+import router from "@/router/index.js";
+export default {
+  name: 'app',
+  router,
+  components: {}
+}
+</script>

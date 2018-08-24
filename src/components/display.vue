@@ -1,16 +1,21 @@
+<style scoped lang="scss"></style>
+
 <template>
   <div id="display">
       <div v-for="(item,index) of componentList" :key="index" :style="item.style">
-        <div v-for="(element,index) of item.allElements" :key="index" :style="element.style">
-           <my-element :type="element.type" :config="element.config"></my-element>
-        </div>
+        <myElement v-for="(element,index) of item.allElements" :key="index" :style="element.style" :type="element.type" :config="element.config">
+        </myElement>
       </div>
   </div>
 </template>
 
 <script>
+import myElement from '@/components/myElement';
 export default {
   name: 'display',
+  components:{
+    myElement
+  },
   data() {
     return {
       componentList:[{
@@ -27,7 +32,7 @@ export default {
               {
                   'type':'picture',
                   'config':{
-                      'src':'../assets/test/bg.png',
+                      'src':'images/test/bg.png',
                       'eleStyle':{
 
                       }
@@ -46,7 +51,7 @@ export default {
               {
                   'type':'picture',
                   'config':{
-                      'src':'../assets/test/Layer4.png',
+                      'src':'images/test/Layer4.png',
                       'eleStyle':{
 
                       }
@@ -83,7 +88,8 @@ export default {
                   }
               }
           ]
-      },{
+      },
+      {
           style:{
               'position':'absolute',
               'top':'470px',
@@ -140,19 +146,19 @@ export default {
                                   'config':{
                                       'imgData':[{
                                           'eleStyle':{
-                                              'background-image':'url("assets/test/222.jpg")'
+                                              'background-image':'url("images/test/222.jpg")'
                                           }
                                       },{
                                           'eleStyle':{
-                                              'background-image':'url("assets/test/865783550181804300.jpg")'
+                                              'background-image':'url("images/test/865783550181804300.jpg")'
                                           }
                                       },{
                                           'eleStyle':{
-                                              'background-image':'url("assets/test/333.jpg")'
+                                              'background-image':'url("images/test/333.jpg")'
                                           }
                                       },{
                                           'eleStyle':{
-                                              'background-image':'url("assets/test/444.jpg")'
+                                              'background-image':'url("images/test/444.jpg")'
                                           }
                                       }],
                                       'currentIndex':0,
@@ -231,12 +237,9 @@ export default {
                   }
               }
           ]
-      }]
+      }
+      ]
     }
   }
 }
 </script>
-
-<style src="@/sass/element.scss" scoped lang="scss"></style>
-<style scoped lang="scss">
-</style>
