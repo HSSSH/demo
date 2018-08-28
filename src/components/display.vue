@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import myElement from '@/components/myElement';
+import myElement from '@/components/display/myElement';
 export default {
   name: 'display',
   components:{
