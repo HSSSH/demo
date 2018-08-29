@@ -1,58 +1,48 @@
 <style scoped lang="scss">
 #design{
-  position: relative;
-  width: 100%;
-  height: 100%;
-  margin: 0;
-  
-  .list {
-      position: absolute;
-      top: 30px;
-      bottom: 30px;
-      left: 30px;
-      right: 300px;
-      box-shadow: 0 0 2px #AAA;
-      background-color: white;
-
-      .filler {
+    position: relative;
+    margin: 0;
+    width: 100vw;
+    min-height: 100vh;
+    background-color: white;
+    .filler {
         width: 100%;
         height: 100%;
         display: inline-block;
         position: absolute;
-      }
-  }
+    }
 }
 </style>
 
 <template>
-  <div id="design">
-    <div class="list" id="list">
-          <VueDragResize v-for="(rect, index) in rects"
-                          :w="rect.width"
-                          :h="rect.height"
-                          :x="rect.left"
-                          :y="rect.top"
-                          :parentW="listWidth"
-                          :parentH="listHeight"
-                          :axis="rect.axis"
-                          :isActive="rect.active"
-                          :minw="rect.minw"
-                          :minh="rect.minh"
-                          :isDraggable="rect.draggable"
-                          :isResizable="rect.resizable"
-                          :parentLimitation="rect.parentLim"
-                          :aspectRatio="rect.aspectRatio"
-                          :z="rect.zIndex"
-                          v-on:activated="activateEv(index)"
-                          v-on:deactivated="deactivateEv(index)"
-                          v-on:dragging="changePosition($event, index)"
-                          v-on:resizing="changeSize($event, index)">
-              <div class="filler" :style="{backgroundColor:rect.color}">
+    <div id="design">
+        <VueDragResize v-for="(rect, index) in rects"
+                    :key="index"
+                    :w="rect.width"
+                    :h="rect.height"
+                    :x="rect.left"
+                    :y="rect.top"
+                    :parentW="listWidth"
+                    :parentH="listHeight"
+                    :axis="rect.axis"
+                    :isActive="rect.active"
+                    :minw="rect.minw"
+                    :minh="rect.minh"
+                    :isDraggable="rect.draggable"
+                    :isResizable="rect.resizable"
+                    :parentLimitation="rect.parentLim"
+                    :aspectRatio="rect.aspectRatio"
+                    :z="rect.zIndex"
+                    v-on:activated="activateEv(index)"
+                    v-on:deactivated="deactivateEv(index)"
+                    v-on:dragging="changePosition($event, index)"
+                    v-on:resizing="changeSize($event, index)"
+        >
+            <div class="filler" :style="{backgroundColor:rect.color}">
 
-              </div>
-          </VueDragResize>
-      </div>
-  </div>
+            </div>
+        </VueDragResize>
+    </div>
 </template>
 
 <script>
@@ -72,7 +62,7 @@ export default {
   },
 
   mounted() {
-      let listEl = document.getElementById('list');
+      let listEl = document.getElementById('design');
       this.listWidth = listEl.clientWidth;
       this.listHeight = listEl.clientHeight;
 
