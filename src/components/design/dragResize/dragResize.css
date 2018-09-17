@@ -1,6 +1,7 @@
 .vdr {
     position: absolute;
     box-sizing: border-box;
+    border: dotted 1px #d6d6d6
 }
 .vdr.active:before{
     content: '';
@@ -10,7 +11,12 @@
     top: 0;
     left: 0;
     box-sizing: border-box;
-    outline: 1px dashed #d6d6d6;
+    outline: 1px dashed #565658;
+}
+.vdr .inside-container{
+    width: 100%;
+    height: 100%;
+    position: relative;
 }
 .vdr-stick {
     box-sizing: border-box;

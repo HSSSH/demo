@@ -533,6 +533,11 @@ export default {
                 }
             }
         },
+
+        focusContainer: function(){
+            // document.getElementById("designArea").style.background = "rgba(42,45,46,0.6)";
+            this.$emit('focusContainer','rgba(242,242,242,0.8)');
+        }
     },
 
     computed: {

@@ -3,63 +3,42 @@
     position: relative;
     margin: 0;
     width: 100vw;
-    min-height: calc(100vh - 60px);
-    background-color: white;
-    .filler {
-        width: 100%;
-        height: 100%;
-        display: inline-block;
+    height: calc(100vh - 36px);
+    background: #ececec;
+    .design-area{
         position: absolute;
+        top: 30px;
+        bottom: 30px;
+        left: 30px;
+        right: 260px;
+        box-shadow: 0 0 2px #aaa;
+        background: #fff;
     }
-    .tools{
-        width: 100%;
-        height: 100%;
-        p{
-            height: 30px;
-            line-height: 30px;
-            padding-left: 10px;
-        }
+    .design-tool{
+        position: absolute;
+        right: 30px;
+        top: 30px;
+        width: 200px;
+        height: 400px;
+        box-shadow: 0 0 2px #aaa;
+        background: #fff;
+    }
+    .design-data{
+        position: absolute;
+        right: 30px;
+        bottom: 30px;
+        top: 445px;
+        width: 200px;
+        box-shadow: 0 0 2px #aaa;
+        background: #fff;
     }
 }
 </style>
 
 <template>
     <div id="design">
-        <!-- <VueDragResize 
-            :w="designTool.width"
-            :h="designTool.height"
-            :x="designTool.left"
-            :y="designTool.top"
-            :parentW="listWidth"
-            :parentH="listHeight"
-            :axis="designTool.axis"
-            :isActive="designTool.active"
-            :minw="designTool.minw"
-            :minh="designTool.minh"
-            :isDraggable="designTool.draggable"
-            :isResizable="designTool.resizable"
-            :parentLimitation="designTool.parentLim"
-            :aspectRatio="designTool.aspectRatio"
-            :z="designTool.zIndex"
-            v-on:activated="activateEv(-1)"
-            v-on:deactivated="deactivateEv(-1)"
-            v-on:dragging="changePosition($event, -1)"
-            v-on:resizing="changeSize($event, -1)"
-        >
-            <div class="tools">
-                <p>布局元素</p>
-                <div>
-                    <span>布局1</span>
-                </div>
-                <p>组件元素</p>
-                <div>
-                    <span>文字</span>
-                    <span>图片</span>
-                </div>
-            </div>
-        </VueDragResize> -->
-
-        <VueDragResize v-for="(rect, index) in rects"
+        <div id="designArea" class="design-area" @drop="drop($event)" @dragover="allowDrop($event)">
+            <VueDragResize v-for="(rect, index) in rects"
                     :key="index"
                     :w="rect.width"
                     :h="rect.height"
@@ -76,40 +55,51 @@
                     :parentLimitation="rect.parentLim"
                     :aspectRatio="rect.aspectRatio"
                     :z="rect.zIndex"
-                    v-on:activated="activateEv(index)"
-                    v-on:deactivated="deactivateEv(index)"
-                    v-on:dragging="changePosition($event, index)"
-                    v-on:resizing="changeSize($event, index)"
-        >
-            <!-- <div class="filler" :style="{backgroundColor:rect.color}">
-
-            </div> -->
-            <myElement v-for="(element,index) of rect.allElements" :key="index" :style="element.style" :type="element.type" :config="element.config">
-            </myElement>
-        </VueDragResize>
+                    :style="{background:rect.color,visibility:rect.visibility}"
+                    @activated="activateEv('rects',index)"
+                    @deactivated="deactivateEv('rects',index)"
+                    @dragging="changePosition($event, 'rects',index)"
+                    @resizing="changeSize($event, 'rects',index)"
+                    @focusContainer="focusContainer($event, 'rects',index)"
+            >
+                <myElement v-for="(element,index) of rect.allElements" :key="index" :style="element.style" :type="element.type" :config="element.config">
+                </myElement>
+            </VueDragResize>
+        </div>
+        <div class="design-tool">
+            <designTools></designTools>
+        </div>
+        <div class="design-data">
+            <elementSet :type="currentChoose.type" :config="currentChoose.config"></elementSet>
+        </div> 
     </div>
 </template>
 
 <script>
-import VueDragResize from '@/components/design/dragResize.vue';
-import myElement from '@/components/display/myElement';
+import VueDragResize from '@/components/design/dragResize/dragResize.vue';
+import myElement from '@/components/myElement';
+import elementSet from '@/components/design/elementSetting';
+import designTools from '@/components/design/designTools.vue';
 
 export default {
     name: 'design',
     components: {
         VueDragResize,
-        myElement
+        myElement,
+        designTools,
+        elementSet
     },
 
     data(){
         return {
             listWidth: 0,
-            listHeight: 0
+            listHeight: 0,
+            currentChooses: {}
         }
     },
 
     mounted() {
-        let listEl = document.getElementById('design');
+        let listEl = document.getElementsByClassName('design-area');
         this.listWidth = listEl.clientWidth;
         this.listHeight = listEl.clientHeight;
 
@@ -123,32 +113,47 @@ export default {
         rects() {
             return this.$store.state.rect.rects
         },
-        designTool(){
-            return this.$store.state.rect.designTool
+        currentChoose(){            
+            return this.$store.state.rect.currentChoose
         }
     },
 
     methods: {
-        activateEv(index) {
-            this.$store.dispatch('rect/setActive', {id: index});
+        activateEv(dataName,index) {
+            this.$store.dispatch('rect/setActive', {name:dataName, id: index});
         },
 
-        deactivateEv(index) {
-            this.$store.dispatch('rect/unsetActive', {id: index});
+        deactivateEv(dataName,index) {
+            this.$store.dispatch('rect/unsetActive', {name:dataName, id: index});
         },
 
-        changePosition(newRect, index) {
-            this.$store.dispatch('rect/setTop', {id: index, top: newRect.top});
-            this.$store.dispatch('rect/setLeft', {id: index, left: newRect.left});
-            this.$store.dispatch('rect/setWidth', {id: index, width: newRect.width});
-            this.$store.dispatch('rect/setHeight', {id: index, height: newRect.height});
+        changePosition(newRect,dataName, index) {
+            this.$store.dispatch('rect/setTop', {name:dataName, id: index, top: newRect.top});
+            this.$store.dispatch('rect/setLeft', {name:dataName, id: index, left: newRect.left});
+            this.$store.dispatch('rect/setWidth', {name:dataName, id: index, width: newRect.width});
+            this.$store.dispatch('rect/setHeight', {name:dataName, id: index, height: newRect.height});
         },
 
-        changeSize(newRect, index) {
-            this.$store.dispatch('rect/setTop', {id: index, top: newRect.top});
-            this.$store.dispatch('rect/setLeft', {id: index, left: newRect.left});
-            this.$store.dispatch('rect/setWidth', {id: index, width: newRect.width});
-            this.$store.dispatch('rect/setHeight', {id: index, height: newRect.height});
+        changeSize(newRect,dataName, index) {
+            this.$store.dispatch('rect/setTop', {name:dataName, id: index, top: newRect.top});
+            this.$store.dispatch('rect/setLeft', {name:dataName, id: index, left: newRect.left});
+            this.$store.dispatch('rect/setWidth', {name:dataName, id: index, width: newRect.width});
+            this.$store.dispatch('rect/setHeight', {name:dataName, id: index, height: newRect.height});
+        },
+
+        focusContainer(newColor,dataName,index){
+            this.$store.dispatch('rect/focusContainer', {name:dataName, id: index, newColor});
+        },
+
+        allowDrop(ev) {
+            ev.preventDefault();
+        },
+    
+        drop(ev) {
+            ev.preventDefault();
+            var data = ev.dataTransfer.getData("myEle");
+            var type = data.split('&')[0];
+            this.$store.dispatch('rect/addNewRect', {name: 'rects', eleType:type, x:ev.layerX, y:ev.layerY});
         }
     }
 }

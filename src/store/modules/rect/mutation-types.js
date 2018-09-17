@@ -28,6 +28,9 @@ export const CHANGE_HEIGHT = 'CHANGE_HEIGHT';
 export const CHANGE_TOP = 'CHANGE_TOP';
 export const CHANGE_LEFT = 'CHANGE_LEFT';
 
+export const ADD_NEW_RECT = 'ADD_NEW_RECT';
+export const FOCUS_CONTAINER = 'FOCUS_CONTAINER';
+
 export default {
     ENABLE_ACTIVE,
     DISABLE_ACTIVE,
@@ -49,5 +52,7 @@ export default {
     CHANGE_WIDTH,
     CHANGE_HEIGHT,
     CHANGE_TOP,
-    CHANGE_LEFT
+    CHANGE_LEFT,
+    ADD_NEW_RECT,
+    FOCUS_CONTAINER
 }

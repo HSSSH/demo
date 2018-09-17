@@ -1,140 +1,151 @@
 import types, {CHANGE_ZINDEX} from './mutation-types';
 
 export default {
-    setActive({commit, state}, {id}) {
-        for (let i = 0, l = state.rects.length; i < l; i++) {
+    setActive({commit, state}, {name,id}) {
+        for (let i = 0, l = state[name].length; i < l; i++) {
             if (i === id) {
-                commit(types.ENABLE_ACTIVE, i);
+                commit(types.ENABLE_ACTIVE,{name, id:i});
                 continue;
             }
-
-            commit(types.DISABLE_ACTIVE, i);
+            commit(types.DISABLE_ACTIVE,{name, id:i});
         }
     },
-    unsetActive({commit}, {id}) {
-        commit(types.DISABLE_ACTIVE, id);
+    unsetActive({commit}, {name,id}) {
+        commit(types.DISABLE_ACTIVE,{name, id});
     },
 
-    toggleDraggable({commit, state}, {id}) {
-        if (!state.rects[id].draggable) {
-            commit(types.ENABLE_DRAGGABLE, id);
+    toggleDraggable({commit, state}, {name,id}) {
+        if (!state[name][id].draggable) {
+            commit(types.ENABLE_DRAGGABLE,{name, id});
         } else {
-            commit(types.DISABLE_DRAGGABLE, id);
+            commit(types.DISABLE_DRAGGABLE,{name, id});
         }
     },
 
-    toggleResizable({commit, state}, {id}) {
-        if (!state.rects[id].resizable) {
-            commit(types.ENABLE_RESIZABLE, id);
+    toggleResizable({commit, state}, {name,id}) {
+        if (!state[name][id].resizable) {
+            commit(types.ENABLE_RESIZABLE,{name, id});
         } else {
-            commit(types.DISABLE_RESIZABLE, id);
+            commit(types.DISABLE_RESIZABLE,{name, id});
         }
     },
 
-    toggleParentLimitation({commit, state}, {id}) {
-        if (!state.rects[id].parentLim) {
-            commit(types.ENABLE_PARENT_LIMITATION, id);
+    toggleParentLimitation({commit, state}, {name,id}) {
+        if (!state[name][id].parentLim) {
+            commit(types.ENABLE_PARENT_LIMITATION,{name, id});
         } else {
-            commit(types.DISABLE_PARENT_LIMITATION, id);
+            commit(types.DISABLE_PARENT_LIMITATION,{name, id});
         }
     },
 
-    setAspect({commit}, {id}) {
-        commit(types.ENABLE_ASPECT, id);
+    setAspect({commit}, {name,id}) {
+        commit(types.ENABLE_ASPECT,{name, id});
     },
-    unsetAspect({commit}, {id}) {
-        commit(types.DISABLE_ASPECT, id);
-    },
-
-    setWidth({commit}, {id, width}) {
-        commit(types.CHANGE_WIDTH, {id, width});
+    unsetAspect({commit}, {name,id}) {
+        commit(types.DISABLE_ASPECT,{name, id});
     },
 
-    setHeight({commit}, {id, height}) {
-        commit(types.CHANGE_HEIGHT, {id, height});
+    setWidth({commit}, {name,id, width}) {
+        commit(types.CHANGE_WIDTH, {name,id, width});
     },
 
-    setTop({commit}, {id, top}) {
-        commit(types.CHANGE_TOP, {id, top});
+    setHeight({commit}, {name,id, height}) {
+        commit(types.CHANGE_HEIGHT, {name,id, height});
     },
 
-    setLeft({commit}, {id, left}) {
-        commit(types.CHANGE_LEFT, {id, left});
+    setTop({commit}, {name,id, top}) {
+        commit(types.CHANGE_TOP, {name,id, top});
     },
 
-    changeXLock({commit, state}, {id}) {
-        switch (state.rects[id].axis) {
+    setLeft({commit}, {name,id, left}) {
+        commit(types.CHANGE_LEFT, {name,id, left});
+    },
+
+    changeXLock({commit, state}, {name,id}) {
+        switch (state[name][id].axis) {
             case 'both':
-                commit(types.ENABLE_Y_AXIS, id);
+                commit(types.ENABLE_Y_AXIS,{name, id});
                 break;
             case 'x':
-                commit(types.ENABLE_NONE_AXIS, id);
+                commit(types.ENABLE_NONE_AXIS,{name, id});
                 break;
             case 'y':
-                commit(types.ENABLE_BOTH_AXIS, id);
+                commit(types.ENABLE_BOTH_AXIS,{name, id});
                 break;
             case 'none':
-                commit(types.ENABLE_X_AXIS, id);
+                commit(types.ENABLE_X_AXIS,{name, id});
                 break;
         }
     },
 
-    changeYLock({commit, state}, {id}) {
-        switch (state.rects[id].axis) {
+    changeYLock({commit, state}, {name,id}) {
+        switch (state[name][id].axis) {
             case 'both':
-                commit(types.ENABLE_X_AXIS, id);
+                commit(types.ENABLE_X_AXIS,{name, id});
                 break;
             case 'x':
-                commit(types.ENABLE_BOTH_AXIS, id);
+                commit(types.ENABLE_BOTH_AXIS,{name, id});
                 break;
             case 'y':
-                commit(types.ENABLE_NONE_AXIS, id);
+                commit(types.ENABLE_NONE_AXIS,{name, id});
                 break;
             case 'none':
-                commit(types.ENABLE_Y_AXIS, id);
+                commit(types.ENABLE_Y_AXIS,{name, id});
                 break;
         }
     },
 
-    changeZToBottom({commit, state}, {id}) {
-        if (state.rects[id].zIndex === 1) {
+    changeZToBottom({commit, state}, {name,id}) {
+        if (state[name][id].zIndex === 1) {
             return
         }
 
-        commit(types.CHANGE_ZINDEX, {id, zIndex: 1});
+        commit(types.CHANGE_ZINDEX, {name, id, zIndex: 1});
 
-        for (let i = 0, l = state.rects.length; i < l; i++) {
+        for (let i = 0, l = state[name].length; i < l; i++) {
             if (i !== id) {
-                if(state.rects[i].zIndex === state.rects.length){
+                if(state[name][i].zIndex === state[name].length){
                     continue
                 }
-                commit(types.CHANGE_ZINDEX, {id: i, zIndex: state.rects[i].zIndex + 1});
+                commit(types.CHANGE_ZINDEX, {name, id: i, zIndex: state[name][i].zIndex + 1});
             }
         }
     },
 
-    changeZToTop({commit, state}, {id}) {
-        if (state.rects[id].zIndex === state.rects.length) {
+    changeZToTop({commit, state}, {name, id}) {
+        if (state[name][id].zIndex === state[name].length) {
             return
         }
 
-        commit(types.CHANGE_ZINDEX, {id, zIndex: state.rects.length});
+        commit(types.CHANGE_ZINDEX, {name, id, zIndex: state[name].length});
 
-        for (let i = 0, l = state.rects.length; i < l; i++) {
+        for (let i = 0, l = state[name].length; i < l; i++) {
             if (i !== id) {
-                if(state.rects[i].zIndex === 1){
+                if(state[name][i].zIndex === 1){
                     continue
                 }
-                commit(types.CHANGE_ZINDEX, {id: i, zIndex: state.rects[i].zIndex - 1});
+                commit(types.CHANGE_ZINDEX, {name ,id: i, zIndex: state[name][i].zIndex - 1});
             }
         }
     },
 
-    setMinWidth({commit}, {id, width}) {
-        commit(types.CHANGE_MINW, {id, minw:width});
+    setMinWidth({commit}, {name, id, width}) {
+        commit(types.CHANGE_MINW, {name,id, minw:width});
     },
 
-    setMinHeight({commit}, {id, height}) {
-        commit(types.CHANGE_MINH, {id, minh:height});
-    }
+    setMinHeight({commit}, {name,id, height}) {
+        commit(types.CHANGE_MINH, {name,id, minh:height});
+    },
+
+    addNewRect({commit},{name,eleType,x,y}){
+        commit(types.ADD_NEW_RECT, {name,eleType, x , y});
+    },
+
+    focusContainer({commit},{name,id,newColor}){
+        commit(types.FOCUS_CONTAINER, {name, id , newColor});
+    },
+
+    setText({commit},{name,text}){
+        commit('fffff', {name, text});
+    },
 };

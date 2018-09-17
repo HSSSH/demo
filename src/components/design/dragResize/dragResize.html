@@ -2,8 +2,9 @@
         :style="style" 
         :class="active || isActive ? 'active' : 'inactive'" 
         @mousedown="bodyDown($event)" 
-        @touchstart="bodyDown($event)">
-        <slot></slot>
+        @touchstart="bodyDown($event)"
+        @dblclick="focusContainer()">
+        <div class="inside-container"><slot></slot></div>
         <div v-for="stick in sticks" 
                 class="vdr-stick" 
                 :class="['vdr-stick-' + stick, isResizable ? '' : 'not-resizable']" 
