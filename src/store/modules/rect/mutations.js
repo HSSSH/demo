@@ -21,112 +21,245 @@ import {
     CHANGE_TOP,
     CHANGE_WIDTH,
     ADD_NEW_RECT,
-    FOCUS_CONTAINER
+    FOCUS_CONTAINER,
+    QUIT_FOCUS,
+    CHANGE_CONFIG,
 } from './mutation-types';
 
 export default {
     [ENABLE_ACTIVE](state,payload) {
-        state[payload.name][payload.id].active = true;
+        var list = getAllTreeNode(state[payload.name]);
+        for(var i=0;i<list.length;i++){
+            list[i].active = list[i].id == payload.id;
+        }
     },
     [DISABLE_ACTIVE](state, payload) {
-        state[payload.name][payload.id].active = false;
+        var node = searchTreeNode(state[payload.name],payload.id);
+        if(node){
+            node.active = false;
+        }
     },
 
     [ENABLE_ASPECT](state, payload) {
-        state[payload.name][payload.id].aspectRatio = true;
+        var node = searchTreeNode(state[payload.name],payload.id);
+        if(node){
+            node.aspectRatio = true;
+        }
     },
     [DISABLE_ASPECT](state, payload) {
-        state[payload.name][payload.id].aspectRatio = false;
+        var node = searchTreeNode(state[payload.name],payload.id);
+        if(node){
+            node.aspectRatio = false;
+        }
     },
 
     [ENABLE_DRAGGABLE](state, payload) {
-        state[payload.name][payload.id].draggable = true;
+        var node = searchTreeNode(state[payload.name],payload.id);
+        if(node){
+            node.draggable = true;
+        }
     },
     [DISABLE_DRAGGABLE](state, payload) {
-        state[payload.name][payload.id].draggable = false;
+        var node = searchTreeNode(state[payload.name],payload.id);
+        if(node){
+            node.draggable = false;
+        }
     },
 
     [ENABLE_RESIZABLE](state, payload) {
-        state[payload.name][payload.id].resizable = true;
+        var node = searchTreeNode(state[payload.name],payload.id);
+        if(node){
+            node.resizable = true;
+        }
     },
     [DISABLE_RESIZABLE](state, payload) {
-        state[payload.name][payload.id].resizable = false;
+        var node = searchTreeNode(state[payload.name],payload.id);
+        if(node){
+            node.resizable = false;
+        }
     },
 
     [ENABLE_BOTH_AXIS](state, payload) {
-        state[payload.name][payload.id].axis = 'both';
+        var node = searchTreeNode(state[payload.name],payload.id);
+        if(node){
+            node.axis = 'both';
+        }
     },
     [ENABLE_NONE_AXIS](state, payload) {
-        state[payload.name][payload.id].axis = 'none';
+        var node = searchTreeNode(state[payload.name],payload.id);
+        if(node){
+            node.axis = 'none';
+        }
     },
     [ENABLE_X_AXIS](state, payload) {
-        state[payload.name][payload.id].axis = 'x';
+        var node = searchTreeNode(state[payload.name],payload.id);
+        if(node){
+            node.axis = 'x';
+        }
     },
     [ENABLE_Y_AXIS](state, payload) {
-        state[payload.name][payload.id].axis = 'y';
+        var node = searchTreeNode(state[payload.name],payload.id);
+        if(node){
+            node.axis = 'y';
+        }
     },
 
     [ENABLE_PARENT_LIMITATION](state, payload) {
-        state[payload.name][payload.id].parentLim = true;
+        var node = searchTreeNode(state[payload.name],payload.id);
+        if(node){
+            node.parentLim = true;
+        }
     },
     [DISABLE_PARENT_LIMITATION](state, payload) {
+        var node = searchTreeNode(state[payload.name],payload.id);
+        if(node){
+            node.parentLim = false;
+        }
         state[payload.name][payload.id].parentLim = false;
     },
 
     [CHANGE_ZINDEX](state, payload) {
-        state[payload.name][payload.id].zIndex = payload.zIndex;
+        var node = searchTreeNode(state[payload.name],payload.id);
+        if(node){
+            node.zIndex = payload.zIndex;
+        }
     },
 
     [CHANGE_HEIGHT](state, payload) {
-        state[payload.name][payload.id].height = payload.height;
+        var node = searchTreeNode(state[payload.name],payload.id);
+        if(node){
+            node.height = payload.height;
+        }
     },
 
     [CHANGE_WIDTH](state, payload) {
-        state[payload.name][payload.id].width = payload.width;
+        var node = searchTreeNode(state[payload.name],payload.id);
+        if(node){
+            node.width = payload.width;
+        }
     },
 
     [CHANGE_TOP](state, payload) {
-        state[payload.name][payload.id].top = payload.top;
+        var node = searchTreeNode(state[payload.name],payload.id);
+        if(node){
+            node.top = payload.top;
+        }
     },
 
     [CHANGE_LEFT](state, payload) {
-        state[payload.name][payload.id].left = payload.left;
+        var node = searchTreeNode(state[payload.name],payload.id);
+        if(node){
+            node.left = payload.left;
+        }
     },
 
     [CHANGE_MINH](state, payload) {
-
-        state[payload.name][payload.id].minh = payload.minh;
+        var node = searchTreeNode(state[payload.name],payload.id);
+        if(node){
+            node.minh = payload.minh;
+        }
     },
 
     [CHANGE_MINW](state, payload) {
-        state[payload.name][payload.id].minw = payload.minw;
+        var node = searchTreeNode(state[payload.name],payload.id);
+        if(node){
+            node.minw = payload.minw;
+        }
     },
 
     [ADD_NEW_RECT](state, payload) {
         var obj = JSON.parse(JSON.stringify(state.initContainer));
         obj.top = payload.y;
         obj.left = payload.x;
+        obj.id = new Date().getTime();
         switch(payload.eleType){
+            case 'panel':
+                obj.element = JSON.parse(JSON.stringify(state.initPanel));
+                obj.element.config.width = obj.width - 2;
+                obj.element.config.height = obj.height - 2;
+                break;
             case 'label':
-                obj.allElements.push(JSON.parse(JSON.stringify(state.initText)));
+                obj.element = JSON.parse(JSON.stringify(state.initText));
                 break;
             case 'picture':
-                obj.allElements.push(JSON.parse(JSON.stringify(state.initPicture)));
+                obj.element = JSON.parse(JSON.stringify(state.initPicture));
                 break;
         }
-        state[payload.name].push(obj);
+        if(payload.parentId == -1){
+            state[payload.name].push(obj);
+        }
+        else{
+            var node = searchTreeNode(state[payload.name],payload.parentId)
+            if(node){
+                node.element.config.children.push(obj);
+            }
+        }
     },
 
     [FOCUS_CONTAINER](state,payload){
-        // state[payload.name].forEach(function(item) {
-        //     item.color = 'none';
-        //     item.visibility = 'hidden';
-        // });
-        // state[payload.name][payload.id].color = payload.newColor;
-        state.currentChoose = state[payload.name][payload.id].allElements[0];
+        var node = searchTreeNode(state[payload.name],payload.id);
+        if(node){
+            node.draggable = false;
+            node.resizable = false;
+            node.zIndex = 1000;
+            node.color = '#ffffff';
+            if(node.element.type == 'panel'){
+                node.element.config.allowDrop = true;
+                node.element.config.width = node.width - 2;
+                node.element.config.height = node.height - 2;
+            }
+            state.currentChoose = node;
+        }
     },
 
-    'fffff'(state, payload) {
-        state.currentChoose.config.text = payload.text;
-    }
+    [QUIT_FOCUS](state,payload){
+        state.currentChoose.draggable = true;
+        state.currentChoose.resizable = true;
+        state.currentChoose.zIndex = payload.zIndex;
+        state.currentChoose.color = 'none';
+        if(state.currentChoose.element.type == 'panel'){
+            state.currentChoose.element.config.allowDrop = false;
+        }
+        state.currentChoose = {};
+    },
+
+    [CHANGE_CONFIG](state, config) {
+        state.currentChoose.element.config = config?JSON.parse(JSON.stringify(config)):{};
+        if( state.currentChoose.element.config.eleStyle['font-size']){
+            state.currentChoose.element.config.eleStyle['font-size'] += 'px';
+        }
+        // for(var key in config){
+        //     if(typeof config[key] != "function"){
+        //         state.currentChoose.allElements[0].config[key] = config[key];
+        //     }
+        // }
+    },
 };
+
+function searchTreeNode(node,id) {
+    var stark = [];
+    stark = stark.concat(node);
+    while(stark.length) {
+        var temp = stark.shift();
+        if(temp.element.config.children) {
+            stark = stark.concat(temp.element.config.children);
+        }
+        if(temp.id === id) {
+            return temp;
+        }
+    }
+}
+
+function getAllTreeNode(node) {
+    var stark = [];
+    var list = [];
+    stark = stark.concat(node);
+    while(stark.length) {
+        var temp = stark.shift();
+        list.push(temp);
+        if(temp.element.config.children) {
+            stark = stark.concat(temp.element.config.children);
+        }
+    }
+    return list;
+}

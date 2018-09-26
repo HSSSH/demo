@@ -13,6 +13,14 @@
         right: 260px;
         box-shadow: 0 0 2px #aaa;
         background: #fff;
+        .cover{
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: rgba(42,45,46,0.6);
+            z-index: 999;
+            visibility: hidden;
+        }
     }
     .design-tool{
         position: absolute;
@@ -31,15 +39,19 @@
         width: 200px;
         box-shadow: 0 0 2px #aaa;
         background: #fff;
+        .check-tree{
+            position: absolute;
+            bottom: 0;
+        }
     }
 }
 </style>
 
 <template>
     <div id="design">
-        <div id="designArea" class="design-area" @drop="drop($event)" @dragover="allowDrop($event)">
-            <VueDragResize v-for="(rect, index) in rects"
-                    :key="index"
+        <div class="design-area" id="designArea" @drop="drop($event)" @dragover="allowDrop($event)">
+            <VueDragResize v-for="(rect) in rects"
+                    :key="rect.id"
                     :w="rect.width"
                     :h="rect.height"
                     :x="rect.left"
@@ -56,21 +68,26 @@
                     :aspectRatio="rect.aspectRatio"
                     :z="rect.zIndex"
                     :style="{background:rect.color,visibility:rect.visibility}"
-                    @activated="activateEv('rects',index)"
-                    @deactivated="deactivateEv('rects',index)"
-                    @dragging="changePosition($event, 'rects',index)"
-                    @resizing="changeSize($event, 'rects',index)"
-                    @focusContainer="focusContainer($event, 'rects',index)"
+                    @activated="activateEv('rects',rect.id)"
+                    @deactivated="deactivateEv('rects',rect.id)"
+                    @dragging="changePosition($event, 'rects',rect.id)"
+                    @resizing="changeSize($event, 'rects',rect.id)"
+                    @focusContainer="focusContainer('rects',rect.id)"
             >
-                <myElement v-for="(element,index) of rect.allElements" :key="index" :style="element.style" :type="element.type" :config="element.config">
+                <myElement :style="rect.element.style" :type="rect.element.type" :config="rect.element.config">
                 </myElement>
             </VueDragResize>
+            <div class="cover" :style="{visibility:coverVisible?'visible':'hidden'}"></div>
         </div>
         <div class="design-tool">
-            <designTools></designTools>
+            <designTools :coverVisible="coverVisible" :currentEle="currentChoose.element"></designTools>
         </div>
         <div class="design-data">
-            <elementSet :type="currentChoose.type" :config="currentChoose.config"></elementSet>
+            <elementSet :type="currentChoose.element.type" :config="currentChoose.element.config" v-if="currentChoose.element"></elementSet>
+            <div>
+                <button class="btn btn-primary" v-if="currentChoose.element" @click="quitFocus()">确定</button>
+            </div>
+            <button class="btn btn-primary check-tree" @click="checkTree()">查看结构</button>
         </div> 
     </div>
 </template>
@@ -94,12 +111,14 @@ export default {
         return {
             listWidth: 0,
             listHeight: 0,
-            currentChooses: {}
+            coverVisible: false,
+            dropCtrl: true,
+            oldZindex: -1
         }
     },
 
     mounted() {
-        let listEl = document.getElementsByClassName('design-area');
+        let listEl = document.getElementById('designArea');
         this.listWidth = listEl.clientWidth;
         this.listHeight = listEl.clientHeight;
 
@@ -113,47 +132,65 @@ export default {
         rects() {
             return this.$store.state.rect.rects
         },
-        currentChoose(){            
+        currentChoose(){
             return this.$store.state.rect.currentChoose
         }
     },
 
     methods: {
-        activateEv(dataName,index) {
-            this.$store.dispatch('rect/setActive', {name:dataName, id: index});
+        activateEv(dataName,id) {
+            this.$store.dispatch('rect/setActive', {name:dataName, id: id});
         },
 
-        deactivateEv(dataName,index) {
-            this.$store.dispatch('rect/unsetActive', {name:dataName, id: index});
+        deactivateEv(dataName,id) {
+            this.$store.dispatch('rect/unsetActive', {name:dataName, id: id});
         },
 
-        changePosition(newRect,dataName, index) {
-            this.$store.dispatch('rect/setTop', {name:dataName, id: index, top: newRect.top});
-            this.$store.dispatch('rect/setLeft', {name:dataName, id: index, left: newRect.left});
-            this.$store.dispatch('rect/setWidth', {name:dataName, id: index, width: newRect.width});
-            this.$store.dispatch('rect/setHeight', {name:dataName, id: index, height: newRect.height});
+        changePosition(newRect,dataName, id) {
+            this.$store.dispatch('rect/setTop', {name:dataName, id: id, top: newRect.top});
+            this.$store.dispatch('rect/setLeft', {name:dataName, id: id, left: newRect.left});
+            this.$store.dispatch('rect/setWidth', {name:dataName, id: id, width: newRect.width});
+            this.$store.dispatch('rect/setHeight', {name:dataName, id: id, height: newRect.height});
         },
 
-        changeSize(newRect,dataName, index) {
-            this.$store.dispatch('rect/setTop', {name:dataName, id: index, top: newRect.top});
-            this.$store.dispatch('rect/setLeft', {name:dataName, id: index, left: newRect.left});
-            this.$store.dispatch('rect/setWidth', {name:dataName, id: index, width: newRect.width});
-            this.$store.dispatch('rect/setHeight', {name:dataName, id: index, height: newRect.height});
+        changeSize(newRect,dataName, id) {
+            this.$store.dispatch('rect/setTop', {name:dataName, id: id, top: newRect.top});
+            this.$store.dispatch('rect/setLeft', {name:dataName, id: id, left: newRect.left});
+            this.$store.dispatch('rect/setWidth', {name:dataName, id: id, width: newRect.width});
+            this.$store.dispatch('rect/setHeight', {name:dataName, id: id, height: newRect.height});
         },
 
-        focusContainer(newColor,dataName,index){
-            this.$store.dispatch('rect/focusContainer', {name:dataName, id: index, newColor});
+        focusContainer(dataName,id){
+            this.coverVisible = true;
+            this.dropCtrl = false;
+            // this.oldZindex = this.$store.state.rect.rects[id].zIndex;
+            this.$store.dispatch('rect/focusContainer', {name:dataName, id: id});
+        },
+
+        quitFocus(){
+            this.coverVisible = false;
+            this.dropCtrl = true;
+            this.$store.dispatch('rect/quitFocus', {zIndex:1});
         },
 
         allowDrop(ev) {
-            ev.preventDefault();
+            if(this.dropCtrl){
+                ev.preventDefault();
+            }
+            return;
         },
     
         drop(ev) {
-            ev.preventDefault();
-            var data = ev.dataTransfer.getData("myEle");
-            var type = data.split('&')[0];
-            this.$store.dispatch('rect/addNewRect', {name: 'rects', eleType:type, x:ev.layerX, y:ev.layerY});
+            if(this.dropCtrl){
+                ev.preventDefault();
+                var type = ev.dataTransfer.getData("myEle");
+                this.$store.dispatch('rect/addNewRect', {name: 'rects', parentId:-1, eleType:type, x:ev.layerX, y:ev.layerY});
+            }
+            return;
+        },
+
+        checkTree(){
+            console.log(this.$store.state.rect.rects);
         }
     }
 }

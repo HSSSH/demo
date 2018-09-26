@@ -22,8 +22,10 @@
     <div v-for="(item,index) in toolList" :key="index">
         <p>{{item.text}}</p>
         <div>
-            <button v-for="(but,index) in item.children" :key="but.type + index" class="btn btn-primary" 
-            draggable="true" @dragstart="dragEle($event)" :id="but.type + '&' + index">{{but.text}}</button>
+            <button v-for="(but) in item.children" :key="but.type" class="btn btn-primary" draggable="true" @dragstart="dragEle($event)" 
+            :id="but.type" :disabled="coverVisible && currentEle && currentEle.type!='panel'">
+                {{but.text}}
+            </button>
         </div>
     </div>
 </div>
@@ -32,6 +34,7 @@
 <script>
 export default {
     name: 'designTools',
+    props: ['coverVisible','currentEle'],
     data() {
         return{
             toolList:[
@@ -65,6 +68,10 @@ export default {
     methods:{
         dragEle: function(ev){
             ev.dataTransfer.setData("myEle",ev.target.id);
+        }
+    },
+    watch: {
+        coverVisible() {
         }
     }
 }

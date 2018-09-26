@@ -30,6 +30,8 @@ export const CHANGE_LEFT = 'CHANGE_LEFT';
 
 export const ADD_NEW_RECT = 'ADD_NEW_RECT';
 export const FOCUS_CONTAINER = 'FOCUS_CONTAINER';
+export const QUIT_FOCUS = 'QUIT_FOCUS';
+export const CHANGE_CONFIG = 'CHANGE_CONFIG';
 
 export default {
     ENABLE_ACTIVE,
@@ -54,5 +56,7 @@ export default {
     CHANGE_TOP,
     CHANGE_LEFT,
     ADD_NEW_RECT,
-    FOCUS_CONTAINER
+    FOCUS_CONTAINER,
+    QUIT_FOCUS,
+    CHANGE_CONFIG,
 }

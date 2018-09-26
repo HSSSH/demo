@@ -29,8 +29,8 @@
   <div id="app">
     <div class="header">
       <ul>
-        <li><router-link to="/display">浏览</router-link></li>
         <li><router-link to="/design">制作</router-link></li>
+        <li><router-link to="/display">浏览</router-link></li>
       </ul>
     </div>
     <router-view class="content-view"></router-view>

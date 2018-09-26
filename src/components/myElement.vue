@@ -1,11 +1,41 @@
 <style src="@/sass/element.scss" scoped lang="scss"></style>
 
 <template>
-    <div v-if="type == 'picture'">
+    <div v-if="type == 'panel'" @drop="drop($event)" @dragover="allowDrop($event)">
+        <VueDragResize v-for="(rect) in myConfig.children"
+                :key="rect.id"
+                :w="rect.width"
+                :h="rect.height"
+                :x="rect.left"
+                :y="rect.top"
+                :parentW="myConfig.width"
+                :parentH="myConfig.height"
+                :axis="rect.axis"
+                :isActive="rect.active"
+                :minw="rect.minw"
+                :minh="rect.minh"
+                :isDraggable="rect.draggable"
+                :isResizable="rect.resizable"
+                :parentLimitation="rect.parentLim"
+                :aspectRatio="rect.aspectRatio"
+                :z="rect.zIndex"
+                :style="{background:rect.color,visibility:rect.visibility}"
+                @activated="activateEv('rects',rect.id)"
+                @deactivated="deactivateEv('rects',rect.id)"
+                @dragging="changePosition($event, 'rects',rect.id)"
+                @resizing="changeSize($event, 'rects',rect.id)"
+                @focusContainer="focusContainer('rects',rect.id)"
+        >
+            <my-element :style="rect.element.style" :type="rect.element.type" :config="rect.element.config">
+            </my-element>
+        </VueDragResize>
+        <div class="panel-cover" :style="{visibility:coverVisible?'visible':'hidden'}"></div>
+    </div>
+    <div v-else-if="type == 'picture'">
         <img :src="myConfig.src" class="default-img" :style="myConfig.eleStyle">
     </div>
     <div v-else-if="type == 'label'">
-        <p class="default-label" :style="myConfig.eleStyle">{{myConfig.text}}</p>
+        <span class="default-label" :style="myConfig.eleStyle">{{myConfig.text}}</span>
     </div>
     <div v-else-if="type == 'navigate'">
         <ul class="default-nav">
@@ -41,21 +71,84 @@
 </template>
 
 <script>
+import VueDragResize from '@/components/design/dragResize/dragResize.vue';
 export default {
     name: 'my-element',
-    components: {},
-    data() {
-        return {
-        }
+    components: {
+        VueDragResize
     },
     props:['config','type'],
-    computed:{
+    data(){
+        return {
+            coverVisible: false,
+            oldZindex: -1
+        }
+    },
+
+    mounted() {
+        // this.$nextTick(function () {
+        //     this.listWidth = this.$el.clientWidth;
+        //     this.listHeight = this.$el.clientHeight;
+        // })
+        // this.listWidth = this.myConfig.width;
+        // this.listHeight = this.myConfig.height;
+    },
+
+    computed: {
         myConfig(){
             return this.config
         }
     },
-    methods: {
 
-    }
+    methods: {
+        activateEv(dataName,id) {
+            this.$store.dispatch('rect/setActive', {name:dataName, id: id});
+        },
+
+        deactivateEv(dataName,id) {
+            this.$store.dispatch('rect/unsetActive', {name:dataName, id: id});
+        },
+
+        changePosition(newRect,dataName, id) {
+            this.$store.dispatch('rect/setTop', {name:dataName, id: id, top: newRect.top});
+            this.$store.dispatch('rect/setLeft', {name:dataName, id: id, left: newRect.left});
+            this.$store.dispatch('rect/setWidth', {name:dataName, id: id, width: newRect.width});
+            this.$store.dispatch('rect/setHeight', {name:dataName, id: id, height: newRect.height});
+        },
+
+        changeSize(newRect,dataName, id) {
+            this.$store.dispatch('rect/setTop', {name:dataName, id: id, top: newRect.top});
+            this.$store.dispatch('rect/setLeft', {name:dataName, id: id, left: newRect.left});
+            this.$store.dispatch('rect/setWidth', {name:dataName, id: id, width: newRect.width});
+            this.$store.dispatch('rect/setHeight', {name:dataName, id: id, height: newRect.height});
+        },
+
+        focusContainer(dataName,id){
+            this.coverVisible = true;
+            // this.oldZindex = this.$store.state.rect.rects[id].zIndex;
+            this.$store.dispatch('rect/focusContainer', {name:dataName, id: id});
+        }, 
+
+        quitFocus(){
+            this.coverVisible = false;
+            this.$store.dispatch('rect/quitFocus', {zIndex:1});
+        },
+
+        allowDrop(ev) {
+            if(this.myConfig.allowDrop){
+                ev.preventDefault();
+            }
+            return;
+        },
+    
+        drop(ev) {
+            if(this.myConfig.allowDrop){
+                ev.preventDefault();
+                var type = ev.dataTransfer.getData("myEle");
+                this.$store.dispatch('rect/addNewRect', {name: 'rects', parentId:this.$store.state.rect.currentChoose.id, eleType:type, x:ev.layerX, y:ev.layerY});
+            }
+            return;
+        }
+    },
 }
 </script>

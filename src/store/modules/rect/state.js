@@ -1,7 +1,10 @@
+import { relative } from "path";
+
 export default {
     'rects': [],
     'currentChoose':{},
     'initContainer':{
+        'id':'',
         'width': 100,
         'height': 100,
         'top': 0,
@@ -17,7 +20,21 @@ export default {
         'color': 'none',
         'visibility':'visible',
         'active': false,
-        'allElements':[]
+        'element':{}
+    },
+    'initPanel':{
+        'type':'panel',
+        'config':{
+            'width': 0,
+            'height': 0,
+            'allowDrop':false,
+            'children':[]
+        },
+        'style':{
+            'position':'relative',
+            'width': '100%',
+            'height': '100%'
+        }
     },
     'initText':{
         'type':'label',

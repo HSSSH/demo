@@ -2,23 +2,36 @@
 
 <template>
   <div id="display">
-      <div v-for="(item,index) of componentList" :key="index" :style="item.style">
-        <myElement v-for="(element,index) of item.allElements" :key="index" :style="element.style" :type="element.type" :config="element.config">
+      <layoutRect v-for="(item,index) of componentList" 
+          :key="index"
+          :w="item.width"
+          :h="item.height"
+          :x="item.left"
+          :y="item.top"
+          :z="item.zIndex">
+        <myElement :style="item.element.style" :type="item.element.type" :config="item.element.config">
         </myElement>
-      </div>
+      </layoutRect>
   </div>
 </template>
 
 <script>
 import myElement from '@/components/myElement';
+import layoutRect from '@/components/display/layoutRect';
+
 export default {
   name: 'display',
   components:{
-    myElement
+    myElement,
+    layoutRect
   },
   data() {
     return {
-      componentList: []
+      componentList: this.$store.state.rect.rects
+    }
+  },
+  methods:{
+    init(){
     }
   }
 }
