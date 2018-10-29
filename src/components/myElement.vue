@@ -29,7 +29,7 @@
             <my-element :style="rect.element.style" :type="rect.element.type" :config="rect.element.config">
             </my-element>
         </VueDragResize>
-        <div class="panel-cover" :style="{visibility:coverVisible?'visible':'hidden'}"></div>
+        <div class="panel-cover" :style="{visibility:myConfig.coverVisible?'visible':'hidden'}"></div>
     </div>
     <div v-else-if="type == 'picture'">
         <img :src="myConfig.src" class="default-img" :style="myConfig.eleStyle">
@@ -80,8 +80,6 @@ export default {
     props:['config','type'],
     data(){
         return {
-            coverVisible: false,
-            oldZindex: -1
         }
     },
 
@@ -124,15 +122,8 @@ export default {
         },
 
         focusContainer(dataName,id){
-            this.coverVisible = true;
-            // this.oldZindex = this.$store.state.rect.rects[id].zIndex;
             this.$store.dispatch('rect/focusContainer', {name:dataName, id: id});
         }, 
-
-        quitFocus(){
-            this.coverVisible = false;
-            this.$store.dispatch('rect/quitFocus', {zIndex:1});
-        },
 
         allowDrop(ev) {
             if(this.myConfig.allowDrop){
@@ -145,7 +136,8 @@ export default {
             if(this.myConfig.allowDrop){
                 ev.preventDefault();
                 var type = ev.dataTransfer.getData("myEle");
-                this.$store.dispatch('rect/addNewRect', {name: 'rects', parentId:this.$store.state.rect.currentChoose.id, eleType:type, x:ev.layerX, y:ev.layerY});
+                var parentId = this.$store.state.rect.currentChoose.length?this.$store.state.rect.currentChoose[this.$store.state.rect.currentChoose.length-1].id:-1
+                this.$store.dispatch('rect/addNewRect', {name: 'rects', parentId:parentId, eleType:type, x:ev.layerX, y:ev.layerY});
             }
             return;
         }

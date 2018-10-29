@@ -50,12 +50,12 @@ export default {
     computed:{
     },    
     watch: {
-        // config: {
-        //     handler(v, o) {
-        //         this.eleConfig = v?JSON.parse(JSON.stringify(v)):{};
-        //     },
-        //     deep: false
-        // },
+        config: {
+            handler(v, o) {
+                this.eleConfig = this.init();
+            },
+            deep: false
+        },
         eleConfig: {
             handler(v, o) {
                  this.changeConfig(v);

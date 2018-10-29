@@ -144,8 +144,8 @@ export default {
         commit(types.FOCUS_CONTAINER, {name, id});
     },
 
-    quitFocus({commit},{zIndex}){
-        commit(types.QUIT_FOCUS, {zIndex});
+    quitFocus({commit}){
+        commit(types.QUIT_FOCUS);
     },
 
     changeConfig({commit},config){

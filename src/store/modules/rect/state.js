@@ -2,7 +2,7 @@ import { relative } from "path";
 
 export default {
     'rects': [],
-    'currentChoose':{},
+    'currentChoose':[],
     'initContainer':{
         'id':'',
         'width': 100,
@@ -17,6 +17,7 @@ export default {
         'parentLim': true,
         'aspectRatio': false,
         'zIndex': 1,
+        'saveIndex': 1,
         'color': 'none',
         'visibility':'visible',
         'active': false,
@@ -28,6 +29,7 @@ export default {
             'width': 0,
             'height': 0,
             'allowDrop':false,
+            'coverVisible':false,
             'children':[]
         },
         'style':{

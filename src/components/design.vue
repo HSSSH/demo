@@ -80,12 +80,13 @@
             <div class="cover" :style="{visibility:coverVisible?'visible':'hidden'}"></div>
         </div>
         <div class="design-tool">
-            <designTools :coverVisible="coverVisible" :currentEle="currentChoose.element"></designTools>
+            <designTools :coverVisible="coverVisible" :currentEle="topChoose.element"></designTools>
         </div>
         <div class="design-data">
-            <elementSet :type="currentChoose.element.type" :config="currentChoose.element.config" v-if="currentChoose.element"></elementSet>
+            <elementSet :type="topChoose.element.type" :config="topChoose.element.config" v-if="topChoose.element"></elementSet>
             <div>
-                <button class="btn btn-primary" v-if="currentChoose.element" @click="quitFocus()">确定</button>
+                <button class="btn btn-primary" v-if="topChoose.element" @click="quitFocus()">上一级</button>
+                <button class="btn btn-primary" v-if="topChoose.element" @click="quitFocus()">退出</button>
             </div>
             <button class="btn btn-primary check-tree" @click="checkTree()">查看结构</button>
         </div> 
@@ -113,7 +114,6 @@ export default {
             listHeight: 0,
             coverVisible: false,
             dropCtrl: true,
-            oldZindex: -1
         }
     },
 
@@ -132,8 +132,8 @@ export default {
         rects() {
             return this.$store.state.rect.rects
         },
-        currentChoose(){
-            return this.$store.state.rect.currentChoose
+        topChoose(){
+            return this.$store.state.rect.currentChoose.length?this.$store.state.rect.currentChoose[this.$store.state.rect.currentChoose.length-1]:{}
         }
     },
 
@@ -163,14 +163,13 @@ export default {
         focusContainer(dataName,id){
             this.coverVisible = true;
             this.dropCtrl = false;
-            // this.oldZindex = this.$store.state.rect.rects[id].zIndex;
             this.$store.dispatch('rect/focusContainer', {name:dataName, id: id});
         },
 
         quitFocus(){
             this.coverVisible = false;
             this.dropCtrl = true;
-            this.$store.dispatch('rect/quitFocus', {zIndex:1});
+            this.$store.dispatch('rect/quitFocus');
         },
 
         allowDrop(ev) {

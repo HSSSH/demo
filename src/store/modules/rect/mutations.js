@@ -198,7 +198,7 @@ export default {
 
     [FOCUS_CONTAINER](state,payload){
         var node = searchTreeNode(state[payload.name],payload.id);
-        if(node){
+        if(node && node.draggable && node.resizable){
             node.draggable = false;
             node.resizable = false;
             node.zIndex = 1000;
@@ -208,31 +208,43 @@ export default {
                 node.element.config.width = node.width - 2;
                 node.element.config.height = node.height - 2;
             }
-            state.currentChoose = node;
+            if(state.currentChoose.length){
+                var temp = state.currentChoose[state.currentChoose.length - 1];
+                temp.element.config.coverVisible = true;
+            }
+            state.currentChoose.push(node);
         }
     },
 
-    [QUIT_FOCUS](state,payload){
-        state.currentChoose.draggable = true;
-        state.currentChoose.resizable = true;
-        state.currentChoose.zIndex = payload.zIndex;
-        state.currentChoose.color = 'none';
-        if(state.currentChoose.element.type == 'panel'){
-            state.currentChoose.element.config.allowDrop = false;
+    [QUIT_FOCUS](state){
+        while(state.currentChoose.length>0){
+            var temp = state.currentChoose.pop();
+            temp.draggable = true;
+            temp.resizable = true;
+            temp.zIndex = temp.saveIndex;
+            temp.color = 'none';
+            if(temp.element.type == 'panel'){
+                temp.element.config.allowDrop = false;
+                temp.element.config.coverVisible = false;
+            }
         }
-        state.currentChoose = {};
     },
 
     [CHANGE_CONFIG](state, config) {
-        state.currentChoose.element.config = config?JSON.parse(JSON.stringify(config)):{};
-        if( state.currentChoose.element.config.eleStyle['font-size']){
-            state.currentChoose.element.config.eleStyle['font-size'] += 'px';
+        // state.currentChoose.element.config = config?JSON.parse(JSON.stringify(config)):{};
+        for(var key in config){
+            if(typeof config[key] != "function" && key != 'eleStyle'){
+                state.currentChoose[state.currentChoose.length - 1].element.config[key] = config[key];
+            }
+            if(key == 'eleStyle'){
+                for(var key2 in config[key]){
+                    state.currentChoose[state.currentChoose.length - 1].element.config[key][key2] = config[key][key2];
+                    if(key2 == 'font-size'){
+                        state.currentChoose[state.currentChoose.length - 1].element.config.eleStyle['font-size'] += 'px';
+                    }
+                }
+            }
         }
-        // for(var key in config){
-        //     if(typeof config[key] != "function"){
-        //         state.currentChoose.allElements[0].config[key] = config[key];
-        //     }
-        // }
     },
 };
 
