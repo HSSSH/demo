@@ -21,6 +21,7 @@ export default {
         'color': 'none',
         'visibility':'visible',
         'active': false,
+        'unableActive':false,
         'element':{}
     },
     'initPanel':{

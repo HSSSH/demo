@@ -18,6 +18,7 @@
                 :isResizable="rect.resizable"
                 :parentLimitation="rect.parentLim"
                 :aspectRatio="rect.aspectRatio"
+                :preventActiveBehavior="rect.unableActive"
                 :z="rect.zIndex"
                 :style="{background:rect.color,visibility:rect.visibility}"
                 @activated="activateEv('rects',rect.id)"

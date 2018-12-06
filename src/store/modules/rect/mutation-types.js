@@ -30,6 +30,7 @@ export const CHANGE_LEFT = 'CHANGE_LEFT';
 
 export const ADD_NEW_RECT = 'ADD_NEW_RECT';
 export const FOCUS_CONTAINER = 'FOCUS_CONTAINER';
+export const PRE_STEP = 'PRE_STEP';
 export const QUIT_FOCUS = 'QUIT_FOCUS';
 export const CHANGE_CONFIG = 'CHANGE_CONFIG';
 
@@ -57,6 +58,7 @@ export default {
     CHANGE_LEFT,
     ADD_NEW_RECT,
     FOCUS_CONTAINER,
+    PRE_STEP,
     QUIT_FOCUS,
     CHANGE_CONFIG,
 }

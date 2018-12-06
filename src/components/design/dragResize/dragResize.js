@@ -245,6 +245,7 @@ export default {
         },
 
         bodyDown: function (ev) {
+            if(this.prohibitChoose) return;
             let target = ev.target || ev.srcElement;
 
             if (!this.preventActiveBehavior) {

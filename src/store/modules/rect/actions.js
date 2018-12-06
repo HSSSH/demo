@@ -144,6 +144,10 @@ export default {
         commit(types.FOCUS_CONTAINER, {name, id});
     },
 
+    preStep({commit}){
+        commit(types.PRE_STEP);
+    },
+
     quitFocus({commit}){
         commit(types.QUIT_FOCUS);
     },

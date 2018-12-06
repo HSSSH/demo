@@ -22,6 +22,7 @@ import {
     CHANGE_WIDTH,
     ADD_NEW_RECT,
     FOCUS_CONTAINER,
+    PRE_STEP,
     QUIT_FOCUS,
     CHANGE_CONFIG,
 } from './mutation-types';
@@ -207,6 +208,9 @@ export default {
                 node.element.config.allowDrop = true;
                 node.element.config.width = node.width - 2;
                 node.element.config.height = node.height - 2;
+                node.element.config.children.forEach(function(v,k) { 
+                    v.unableActive = false;
+                });
             }
             if(state.currentChoose.length){
                 var temp = state.currentChoose[state.currentChoose.length - 1];
@@ -216,8 +220,27 @@ export default {
         }
     },
 
+    [PRE_STEP](state){
+        var temp = state.currentChoose.pop();
+        temp.draggable = true;
+        temp.resizable = true;
+        temp.zIndex = temp.saveIndex;
+        temp.color = 'none';
+        if(temp.element.type == 'panel'){
+            temp.element.config.allowDrop = false;
+            temp.element.config.coverVisible = false;
+            temp.element.config.children.forEach(function(v,k) { 
+                v.unableActive = true;
+            });
+        }
+        if(state.currentChoose.length){
+            var top = state.currentChoose[state.currentChoose.length - 1];
+            top.element.config.coverVisible = false;
+        }
+    },
+
     [QUIT_FOCUS](state){
-        while(state.currentChoose.length>0){
+        while(state.currentChoose.length > 0){
             var temp = state.currentChoose.pop();
             temp.draggable = true;
             temp.resizable = true;
@@ -226,6 +249,9 @@ export default {
             if(temp.element.type == 'panel'){
                 temp.element.config.allowDrop = false;
                 temp.element.config.coverVisible = false;
+                temp.element.config.children.forEach(function(v,k) { 
+                    v.unableActive = true;
+                });
             }
         }
     },

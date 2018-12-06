@@ -66,6 +66,7 @@
                     :isResizable="rect.resizable"
                     :parentLimitation="rect.parentLim"
                     :aspectRatio="rect.aspectRatio"
+                    :preventActiveBehavior="rect.unableActive"
                     :z="rect.zIndex"
                     :style="{background:rect.color,visibility:rect.visibility}"
                     @activated="activateEv('rects',rect.id)"
@@ -85,7 +86,7 @@
         <div class="design-data">
             <elementSet :type="topChoose.element.type" :config="topChoose.element.config" v-if="topChoose.element"></elementSet>
             <div>
-                <button class="btn btn-primary" v-if="topChoose.element" @click="quitFocus()">上一级</button>
+                <button class="btn btn-primary" v-if="topChoose.element" @click="preStep()">上一级</button>
                 <button class="btn btn-primary" v-if="topChoose.element" @click="quitFocus()">退出</button>
             </div>
             <button class="btn btn-primary check-tree" @click="checkTree()">查看结构</button>
@@ -164,6 +165,14 @@ export default {
             this.coverVisible = true;
             this.dropCtrl = false;
             this.$store.dispatch('rect/focusContainer', {name:dataName, id: id});
+        },
+
+        preStep(){
+            if(this.$store.state.rect.currentChoose.length == 1){
+                this.coverVisible = false;
+                this.dropCtrl = true;
+            }
+            this.$store.dispatch('rect/preStep');
         },
 
         quitFocus(){
