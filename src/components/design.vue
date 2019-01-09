@@ -1,15 +1,16 @@
 <style scoped lang="scss">
 #design{
+    
     position: relative;
     margin: 0;
     width: 100vw;
-    height: calc(100vh - 36px);
+    height: 100%;
     background: #ececec;
     .design-area{
         position: absolute;
-        top: 30px;
-        bottom: 30px;
-        left: 30px;
+        top: 15px;
+        bottom: 15px;
+        left: 15px;
         right: 260px;
         box-shadow: 0 0 2px #aaa;
         background: #fff;
@@ -24,25 +25,12 @@
     }
     .design-tool{
         position: absolute;
-        right: 30px;
-        top: 30px;
-        width: 200px;
-        height: 400px;
+        width: 230px;
+        right: 15px;
+        top: 15px;
+        bottom: 15px;
         box-shadow: 0 0 2px #aaa;
         background: #fff;
-    }
-    .design-data{
-        position: absolute;
-        right: 30px;
-        bottom: 30px;
-        top: 445px;
-        width: 200px;
-        box-shadow: 0 0 2px #aaa;
-        background: #fff;
-        .check-tree{
-            position: absolute;
-            bottom: 0;
-        }
     }
 }
 </style>
@@ -81,16 +69,42 @@
             <div class="cover" :style="{visibility:coverVisible?'visible':'hidden'}"></div>
         </div>
         <div class="design-tool">
-            <designTools :coverVisible="coverVisible" :currentEle="topChoose.element"></designTools>
+            <Menu :mode="'vertical'" :width="'100%'" :theme="'light'" :open-names="['1']" accordion>
+                <Submenu name="1">
+                    <template slot="title">
+                        <Icon type="ios-paper" />
+                        组件
+                    </template>
+                    <designTools :coverVisible="coverVisible" :currentEle="topChoose.element">
+
+                    </designTools>
+                </Submenu>
+                <Submenu name="2">
+                    <template slot="title">
+                        <Icon type="ios-people" />
+                        配置
+                    </template>
+                    <elementSet :type="topChoose.element.type" :config="topChoose.element.config" v-if="topChoose.element"></elementSet>
+                    <div>
+                        <button class="btn btn-primary" v-if="topChoose.element" @click="preStep()">上一级</button>
+                        <button class="btn btn-primary" v-if="topChoose.element" @click="quitFocus()">退出</button>
+                    </div>
+                </Submenu>
+                <Submenu name="3">
+                    <template slot="title">
+                        <Icon type="ios-stats" />
+                        视图
+                    </template>
+                </Submenu>
+                <Submenu name="4">
+                    <template slot="title">
+                        <Icon type="ios-stats" />
+                        结构
+                    </template>
+                    <button @click="checkTree()">查看</button>
+                </Submenu>
+            </Menu>
         </div>
-        <div class="design-data">
-            <elementSet :type="topChoose.element.type" :config="topChoose.element.config" v-if="topChoose.element"></elementSet>
-            <div>
-                <button class="btn btn-primary" v-if="topChoose.element" @click="preStep()">上一级</button>
-                <button class="btn btn-primary" v-if="topChoose.element" @click="quitFocus()">退出</button>
-            </div>
-            <button class="btn btn-primary check-tree" @click="checkTree()">查看结构</button>
-        </div> 
     </div>
 </template>
 
@@ -198,7 +212,7 @@ export default {
         },
 
         checkTree(){
-            console.log(this.$store.state.rect.rects);
+            console.log(this.rects);
         }
     }
 }

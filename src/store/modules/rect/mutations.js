@@ -178,6 +178,7 @@ export default {
                 obj.element = JSON.parse(JSON.stringify(state.initPanel));
                 obj.element.config.width = obj.width - 2;
                 obj.element.config.height = obj.height - 2;
+                obj.element.config.currentPanelId = obj.id;
                 break;
             case 'label':
                 obj.element = JSON.parse(JSON.stringify(state.initText));
@@ -208,6 +209,7 @@ export default {
                 node.element.config.allowDrop = true;
                 node.element.config.width = node.width - 2;
                 node.element.config.height = node.height - 2;
+                node.element.config.currentPanelId = node.id;
                 node.element.config.children.forEach(function(v,k) { 
                     v.unableActive = false;
                 });

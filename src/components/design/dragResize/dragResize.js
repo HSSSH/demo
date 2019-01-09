@@ -245,12 +245,9 @@ export default {
         },
 
         bodyDown: function (ev) {
-            if(this.prohibitChoose) return;
+            if(this.preventActiveBehavior) return;
             let target = ev.target || ev.srcElement;
-
-            if (!this.preventActiveBehavior) {
-                this.active = true;
-            }
+            this.active = true;
 
             if (ev.button && ev.button !== 0) {
                 return
@@ -536,6 +533,9 @@ export default {
         },
 
         focusContainer: function(){
+            if (this.preventActiveBehavior) {
+                return
+            }
             this.$emit('focusContainer');
         }
     },

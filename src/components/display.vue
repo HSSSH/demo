@@ -18,7 +18,6 @@
 <script>
 import myElement from '@/components/myElement';
 import layoutRect from '@/components/display/layoutRect';
-
 export default {
   name: 'display',
   components:{

@@ -27,6 +27,7 @@ export default {
     'initPanel':{
         'type':'panel',
         'config':{
+            'currentPanelId':'',
             'width': 0,
             'height': 0,
             'allowDrop':false,

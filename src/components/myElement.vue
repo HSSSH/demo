@@ -138,7 +138,9 @@ export default {
                 ev.preventDefault();
                 var type = ev.dataTransfer.getData("myEle");
                 var parentId = this.$store.state.rect.currentChoose.length?this.$store.state.rect.currentChoose[this.$store.state.rect.currentChoose.length-1].id:-1
-                this.$store.dispatch('rect/addNewRect', {name: 'rects', parentId:parentId, eleType:type, x:ev.layerX, y:ev.layerY});
+                if(this.myConfig.currentPanelId == parentId){
+                    this.$store.dispatch('rect/addNewRect', {name: 'rects', parentId:parentId, eleType:type, x:ev.layerX, y:ev.layerY});
+                }
             }
             return;
         }
