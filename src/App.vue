@@ -4,6 +4,19 @@
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  .menu-type{
+      li{
+          padding: 0;
+          a{
+            display: inline-block;
+            height: 100%;
+            padding: 0 20px;
+            i{
+                margin-right: 5px;
+            }
+          }
+      }
+  }
   .content-view{
     width: 100%;
     height: calc(100vh - 60px);
@@ -14,18 +27,15 @@
 
 <template>
   <div id="app">
-    <Menu mode="horizontal" :theme="menuTheme" active-name="1">
+    <Menu mode="horizontal" :theme="menuTheme" active-name="1" class="menu-type">
         <MenuItem name="1">
-            <Icon type="ios-paper" />
-            <router-link to="/design">制作</router-link>
+            <router-link to="/design"><Icon type="ios-paper" />制作</router-link>
         </MenuItem>
         <MenuItem name="2">
-            <Icon type="ios-people" />
-            <router-link to="/display">浏览</router-link>
+            <router-link to="/display"><Icon type="ios-people" />浏览</router-link>
         </MenuItem>
         <MenuItem name="3">
-            <Icon type="ios-stats" />
-            <router-link to="/test">XXX</router-link></li>
+            <router-link to="/test"><Icon type="ios-stats" />XXX</router-link>
         </MenuItem>
         <!-- <Submenu name="4">
             <template slot="title">

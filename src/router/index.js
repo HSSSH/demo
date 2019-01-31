@@ -23,7 +23,6 @@ export default new Router({
         path: '/display',
         name: 'display',
         component: display
-
     },{
         path: '/test',
         name: 'test',
